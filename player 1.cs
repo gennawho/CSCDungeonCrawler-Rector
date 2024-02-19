@@ -17,7 +17,7 @@ public class player1 : MonoBehaviour
     private bool amMoving = false;
     private bool atCenter = false;
     float speed = 5.0f;
-
+    public GameObject center;
     private void turnOffExits()
     {
         this.NorthDoor.gameObject.SetActive(false);
@@ -37,9 +37,11 @@ public class player1 : MonoBehaviour
 
     void Start()
     {
-      this.turnOffExits();
+        this.center.SetActive(false);
+        this.turnOffExits();
 
-        if(!MySingleton.exitDoor.Equals("?"))
+        
+        if (!MySingleton.exitDoor.Equals("?"))
         {
             if (MySingleton.exitDoor.Equals("north"))
             {
@@ -55,12 +57,20 @@ public class player1 : MonoBehaviour
             }
             else if (MySingleton.exitDoor.Equals("east"))
             {
-                this.transform.position = EastDoor.transform.position;
+                this.transform.position = WestDoor.transform.position;
             }
         }
+        
+        StartCoroutine(TurnOnMiddle());
+
 
     }
-
+    IEnumerator TurnOnMiddle()
+    {
+        yield return new WaitForSeconds(1);
+        this.center.SetActive(true);
+        
+    }
     private void OnCollisionEnter(Collision collision)
     {
         print("onCollisionEnter");
@@ -74,8 +84,9 @@ public class player1 : MonoBehaviour
         }
         else if (other.CompareTag("middleOfTheRoom") && !MySingleton.exitDoor.Equals("?"))
         {
-            print("at middle of Room");
             this.atCenter = true;
+            MySingleton.exitDoor = "middle";
+
         }
     }
     private void OnTriggerExit(Collider other)
