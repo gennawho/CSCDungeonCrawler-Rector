@@ -14,10 +14,51 @@ public class player1 : MonoBehaviour
     public GameObject EastDoor;
     public GameObject SouthDoor;
     public GameObject WestDoor;
-    float speed = 1.0f;
+    private bool amMoving = false;
+    private bool atCenter = false;
+    float speed = 5.0f;
+
+    private void turnOffExits()
+    {
+        this.NorthDoor.gameObject.SetActive(false);
+        this.SouthDoor.gameObject.SetActive(false);
+        this.EastDoor.gameObject.SetActive(false);
+        this.WestDoor.gameObject.SetActive(false);
+
+    }
+
+    private void turnOnExits()
+    {
+        this.NorthDoor.gameObject.SetActive(true);
+        this.SouthDoor.gameObject.SetActive(true);
+        this.EastDoor.gameObject.SetActive(true);
+        this.WestDoor.gameObject.SetActive(true);
+    }
+
     void Start()
     {
-      
+      this.turnOffExits();
+
+        if(!MySingleton.exitDoor.Equals("?"))
+        {
+            if (MySingleton.exitDoor.Equals("north"))
+            {
+                this.transform.position = SouthDoor.transform.position;
+            }
+            else if (MySingleton.exitDoor.Equals("south"))
+            {
+                this.transform.position = NorthDoor.transform.position;
+            }
+            else if (MySingleton.exitDoor.Equals("west"))
+            {
+                this.transform.position = EastDoor.transform.position;
+            }
+            else if (MySingleton.exitDoor.Equals("east"))
+            {
+                this.transform.position = EastDoor.transform.position;
+            }
+        }
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -26,17 +67,76 @@ public class player1 : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-       
-        EditorSceneManager.LoadScene("Scene2");
+
+        if (other.CompareTag("door"))
+        {
+            EditorSceneManager.LoadScene("DungeonRoom");
+        }
+        else if (other.CompareTag("middleOfTheRoom") && !MySingleton.exitDoor.Equals("?"))
+        {
+            print("at middle of Room");
+            this.atCenter = true;
+        }
     }
     private void OnTriggerExit(Collider other)
     {
        
     }
     // Update is called once per frame
-    private void FixedUpdate()
+    void Update()
     {
-        this.transform.position = Vector3.Lerp(this.NorthDoor.transform.position, this.transform.position, Time.deltaTime * speed);
-        MySingleton.exitDoor = 'n';
+        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            this.turnOnExits();
+            MySingleton.exitDoor = "north";
+            this.gameObject.transform.LookAt(this.NorthDoor.transform.position);
+        }
+
+        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            this.turnOnExits();
+            MySingleton.exitDoor = "south";
+            this.gameObject.transform.LookAt(this.SouthDoor.transform.position);
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            this.turnOnExits();
+            MySingleton.exitDoor = "west";
+            this.gameObject.transform.LookAt(this.WestDoor.transform.position);
+        }
+
+        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            this.turnOnExits();
+            MySingleton.exitDoor = "east";
+            this.gameObject.transform.LookAt(this.EastDoor.transform.position);
+
+        }
+
+        //make the player move in the current direction
+        if (MySingleton.exitDoor.Equals("north"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.NorthDoor.transform.position, this.speed * Time.deltaTime);
+        }
+
+        if (MySingleton.exitDoor.Equals("south"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.SouthDoor.transform.position, this.speed * Time.deltaTime);
+        }
+
+        if (MySingleton.exitDoor.Equals("west"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.WestDoor.transform.position, this.speed * Time.deltaTime);
+        }
+
+        if (MySingleton.exitDoor.Equals("east"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.EastDoor.transform.position, this.speed * Time.deltaTime);
+        }
     }
 }

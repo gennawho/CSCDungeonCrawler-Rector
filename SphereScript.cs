@@ -12,7 +12,7 @@ public class SphereScript : MonoBehaviour
     float speed = 1.0f;
     void Start()
     {
-        if(MySingleton.exitDoor == 'n') {
+      /*  if(MySingleton.exitDoor == 'n') {
             this.transform.position = SouthDoor.transform.position;
         }
         else if (MySingleton.exitDoor == 's')
@@ -26,7 +26,7 @@ public class SphereScript : MonoBehaviour
         else if (MySingleton.exitDoor == 'e')
         {
             this.transform.position = WestDoor.transform.position;
-        }
+        }*/
 
     }
 

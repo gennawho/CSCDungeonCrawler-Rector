@@ -5,5 +5,5 @@ using UnityEngine;
 public class MySingleton 
 {
     static public int secretNumber = -1;
-    static public char exitDoor = 'n';
+    static public string exitDoor = "?";
 }
