@@ -6,9 +6,10 @@ public class room
 {
     private string name;
     private int exitNum;
+
     public room(string name)
     {
-        this.exitNum = (int)Random.Range(1,4);
+        
         this.name = name;
 
     }

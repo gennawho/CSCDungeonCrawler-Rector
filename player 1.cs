@@ -37,40 +37,69 @@ public class player1 : MonoBehaviour
 
     void Start()
     {
-        this.center.SetActive(false);
         this.turnOffExits();
 
-        
+        //disable the middle collider until we know what our initial state will be
+        //it should already be disabled by default, but for clarity, lets do it here
+        this.middleOfTheRoom.SetActive(false);
+
         if (!MySingleton.exitDoor.Equals("?"))
         {
+            //mark ourselves as moving since we are entering the scene through one of the exits
+            this.amMoving = true;
+
+            //we will be positioning the player by one of the exits so we can turn on the middle collider
+            this.middleOfTheRoom.SetActive(true);
+            this.amAtMiddleOfRoom = false;
+
             if (MySingleton.exitDoor.Equals("north"))
             {
-                this.transform.position = SouthDoor.transform.position;
+                this.gameObject.transform.position = this.southDoor.transform.position;
+                this.gameObject.transform.LookAt(this.northDoor.transform.position);
+                //rb.MovePosition(this.southExit.transform.position);
+                MySingleton.previousExit = "south";
             }
             else if (MySingleton.exitDoor.Equals("south"))
             {
-                this.transform.position = NorthDoor.transform.position;
+                this.gameObject.transform.position = this.northDoor.transform.position;
+                this.gameObject.transform.LookAt(this.southDoor.transform.position);
+                //rb.MovePosition(this.northExit.transform.position);
+                MySingleton.previousExit = "north";
             }
             else if (MySingleton.exitDoor.Equals("west"))
             {
-                this.transform.position = EastDoor.transform.position;
+                this.gameObject.transform.position = this.eastDoor.transform.position;
+                this.gameObject.transform.LookAt(this.westDoor.transform.position);
+                MySingleton.previousExit = "east";
+                //rb.MovePosition(this.eastExit.transform.position);
             }
             else if (MySingleton.exitDoor.Equals("east"))
             {
-                this.transform.position = WestDoor.transform.position;
+                this.gameObject.transform.position = this.westDoor.transform.position;
+                this.gameObject.transform.LookAt(this.eastDoor.transform.position);
+                MySingleton.previousExit = "west";
+                //rb.MovePosition(this.westExit.transform.position);
             }
+            //StartCoroutine(turnOnMiddle());
+        }
+        else
+        {
+            //We will be positioning the play at the middle
+            //so keep the middle collider off for this run of the scene
+            this.amMoving = false;
+            this.amAtMiddleOfRoom = true;
+            this.middleOfTheRoom.SetActive(false);
+            this.gameObject.transform.position = this.middleOfTheRoom.transform.position;
         }
         
-        StartCoroutine(TurnOnMiddle());
 
-
-    }
-    IEnumerator TurnOnMiddle()
-    {
-        yield return new WaitForSeconds(1);
-        this.center.SetActive(true);
+}
+   // IEnumerator TurnOnMiddle()
+   // {
+        //yield return new WaitForSeconds(1);
+        //this.center.SetActive(true);
         
-    }
+    //}
     private void OnCollisionEnter(Collision collision)
     {
         print("onCollisionEnter");
