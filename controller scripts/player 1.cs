@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 public class player1 : MonoBehaviour
 {
     // Start is called before the first frame update
-    public TextMeshPro tm;
+    
     public GameObject NorthDoor;
     public GameObject EastDoor;
     public GameObject SouthDoor;
@@ -48,8 +48,8 @@ public class player1 : MonoBehaviour
             this.amMoving = true;
 
             //we will be positioning the player by one of the exits so we can turn on the middle collider
-            this.middleOfTheRoom.SetActive(true);
-            this.amAtMiddleOfRoom = false;
+            this.center.SetActive(true);
+            this.atCenter = false;
 
             if (MySingleton.exitDoor.Equals("north"))
             {
@@ -104,7 +104,14 @@ public class player1 : MonoBehaviour
 
         if (other.CompareTag("door"))
         {
+            MySingleton.thePlayer.getCurrentRoom().removePlayer(MySingleton.currentDirection);
             EditorSceneManager.LoadScene("DungeonRoom");
+
+        }
+        else if (other.CompareTag("power-pellet"))
+        {
+            MySingleton.thePlayer.removePickup(MySingleton.exitDoor);
+            MySingleton.numOfPellets++;
         }
         else if (other.CompareTag("middleOfTheRoom") && !MySingleton.exitDoor.Equals("?"))
         {

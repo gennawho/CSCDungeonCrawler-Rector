@@ -7,8 +7,9 @@ public class MySingleton
     public static string exitDoor = "?";
     public static player thePlayer;
     public static Dungeon theDungeon = MySingleton.generateDungeon();
+    public static int numOfPellets = 0;
 
-    public static void generateDungeon()
+    public static Dungeon generateDungeon()
     {
         room r1 = new room("R1");
         room r2 = new room("R2");
