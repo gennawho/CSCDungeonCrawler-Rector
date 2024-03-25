@@ -40,7 +40,7 @@ public class player1 : MonoBehaviour
 
         //disable the middle collider until we know what our initial state will be
         //it should already be disabled by default, but for clarity, lets do it here
-        this.middleOfTheRoom.SetActive(false);
+        this.center.SetActive(false);
 
         if (!MySingleton.exitDoor.Equals("?"))
         {
@@ -56,27 +56,27 @@ public class player1 : MonoBehaviour
                 this.gameObject.transform.position = this.SouthDoor.transform.position;
                 this.gameObject.transform.LookAt(this.NorthDoor.transform.position);
                 //rb.MovePosition(this.southExit.transform.position);
-                MySingleton.previousExit = "south";
+                
             }
             else if (MySingleton.exitDoor.Equals("south"))
             {
                 this.gameObject.transform.position = this.NorthDoor.transform.position;
                 this.gameObject.transform.LookAt(this.SouthDoor.transform.position);
                 //rb.MovePosition(this.northExit.transform.position);
-                MySingleton.previousExit = "north";
+                
             }
             else if (MySingleton.exitDoor.Equals("west"))
             {
                 this.gameObject.transform.position = this.EastDoor.transform.position;
                 this.gameObject.transform.LookAt(this.WestDoor.transform.position);
-                MySingleton.previousExit = "east";
+               
                 //rb.MovePosition(this.eastExit.transform.position);
             }
             else if (MySingleton.exitDoor.Equals("east"))
             {
                 this.gameObject.transform.position = this.WestDoor.transform.position;
                 this.gameObject.transform.LookAt(this.EastDoor.transform.position);
-                MySingleton.previousExit = "west";
+                
                 //rb.MovePosition(this.westExit.transform.position);
             }
             //StartCoroutine(turnOnMiddle());
@@ -104,13 +104,21 @@ public class player1 : MonoBehaviour
 
         if (other.CompareTag("door"))
         {
-            MySingleton.thePlayer.getCurrentRoom().removePlayer(MySingleton.currentDirection);
+            MySingleton.thePlayer.getCurrentRoom().removePlayer(MySingleton.exitDoor);
             EditorSceneManager.LoadScene("DungeonRoom");
 
         }
         else if (other.CompareTag("power-pellet"))
         {
-            MySingleton.thePlayer.removePickup(MySingleton.exitDoor);
+            other.gameObject.SetActive(false);
+            if (atCenter)
+            {
+                MySingleton.thePlayer.getCurrentRoom().removePellet(MySingleton.exitDoor);
+            }
+            else
+            {
+                MySingleton.thePlayer.getCurrentRoom().removePellet(MySingleton.flipDirection(MySingleton.exitDoor));
+            }
             MySingleton.numOfPellets++;
         }
         else if (other.CompareTag("middleOfTheRoom") && !MySingleton.exitDoor.Equals("?"))
@@ -120,6 +128,7 @@ public class player1 : MonoBehaviour
             this.atCenter = true;
             this.amMoving = false;
             MySingleton.exitDoor = "middle";
+            EditorSceneManager.LoadScene("Fight Scene");
 
         }
     }

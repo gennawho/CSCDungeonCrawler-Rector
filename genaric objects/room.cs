@@ -8,7 +8,11 @@ public class room
     private Exit[] theExits = new Exit[4];
     private int howManyExits = 0;
     private player currentPlayer;
-    private gameObject[] pickups = new gameObject[4];
+    private Pellet northPellet = null;
+    private Pellet southPellet = null;
+    private Pellet eastPellet = null;
+    private Pellet westPellet = null;
+    private string name;
     public room(string name)
     {
         this.name = name;
@@ -26,13 +30,45 @@ public class room
             Exit e = new Exit(direction, destination);
             this.theExits[howManyExits] = e;
             howManyExits++;
+            if (direction.Equals("north"))
+            {
+                this.northPellet = new ArmorPellet();
+            }
+            else if (direction.Equals("south"))
+            {
+                this.southPellet = new ArmorPellet();
+            }
+            else if (direction.Equals("east"))
+            {
+                this.eastPellet = new ArmorPellet();
+            }
+            else if (direction.Equals("west"))
+            {
+                this.westPellet = new ArmorPellet();
+            }
         }
       
 
     }
+    public bool hasExit(string direction)
+    {
+        for (int i = 0; i < this.howManyExits; i++)
+        {
+            if (this.theExits[i].getDirection().Equals(direction))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
     public void removePlayer(string direction)
     {
-        Exit theExit this.GetExitGivenDirection(direction);
+        Exit theExit = this.GetExitGivenDirection(direction);
         room destinationRoom = theExit.GetDestinationRoom();
         destinationRoom.addPlayer(this.currentPlayer);  
         currentPlayer = null;
@@ -49,26 +85,66 @@ public class room
             {
                 return null;
             }
-        }       
-    }
-    public void removePickup(string direction)
-    {
-        if (direction.Equals("north"))
-        {
-            pickups[0].setActive(false);
         }
-        if (direction.Equals("east"))
+        return null;
+    }
+    public void addPellet(Pellet p, string direction)
+    {
+        if(direction.Equals("north"))
         {
-            pickups[1].setActive(false);
+            this.northPellet=p;
         }
         if (direction.Equals("south"))
         {
-            pickups[2].setActive(false);
+            this.southPellet = p;
+        }
+        if (direction.Equals("east"))
+        {
+            this.eastPellet = p;
         }
         if (direction.Equals("west"))
         {
-            pickups[3].setActive(false);
+            this.westPellet = p;
         }
+    }
+    public void removePellet(string direction)
+    {
+        if (direction.Equals("north"))
+        {
+            this.northPellet = null;
+        }
+        if (direction.Equals("south"))
+        {
+            this.southPellet = null;
+        }
+        if (direction.Equals("east"))
+        {
+            this.eastPellet = null;
+        }
+        if (direction.Equals("west"))
+        {
+            this.westPellet = null;
+        }
+    }
+    public bool hasPellet(string direction)
+    {
+        if (direction.Equals("north"))
+        {
+           return this.northPellet != null;
+        }
+        else if (direction.Equals("south"))
+        {
+            return this.southPellet != null;
+        }
+        else if (direction.Equals("east"))
+        {
+            return this.eastPellet != null;
+        }
+        else if (direction.Equals("west"))
+        {
+            return this.westPellet != null;
+        }
+            return false;
     }
 
 }
