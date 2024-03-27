@@ -30,6 +30,7 @@ public class MySingleton
         r5.addExit("west", r3);
         r6.addExit("south", r3);
         MySingleton.thePlayer = new player("Mike");
+        thePlayer.setStats();
         theDungeon.addPlayer(MySingleton.thePlayer);
         return theDungeon;
     }
